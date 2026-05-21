@@ -1,4 +1,4 @@
-![image alt](
+![image alt](https://github.com/RakshithMR123/Cloudnotes/blob/27c03d1b21751b0a2cf8cafc4d9f1c2bc5f6f9e5/Screenshot%200.png)
 
 # Run and deploy your AI Studio app
 
