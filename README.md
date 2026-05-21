@@ -1,5 +1,5 @@
 ![image alt](https://github.com/RakshithMR123/Cloudnotes/blob/27c03d1b21751b0a2cf8cafc4d9f1c2bc5f6f9e5/Screenshot%200.png)
-
+![image alt](https://github.com/RakshithMR123/Cloudnotes/blob/d2468b55b496e2373c2e967161d89d4d34f556b0/Screenshot%201.png)
 # Run and deploy your AI Studio app
 
 This contains everything you need to run your app locally.
