@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "A single note document",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "folderId": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "isEncrypted": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "sharedWith": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "ownerId", "content"]
+    },
+    "Folder": {
+      "title": "Folder",
+      "description": "Folder to organize notes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "parentFolderId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Collection of user profiles"
+    },
+    "notes": {
+      "schema": "Note",
+      "description": "Collection of notes"
+    },
+    "folders": {
+      "schema": "Folder",
+      "description": "Collection of folders"
+    }
+  }
+}

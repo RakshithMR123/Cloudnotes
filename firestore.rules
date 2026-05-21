@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if false; // No blanket profile listing
+      allow create, update: if isOwner(userId) && 
+        incoming().uid == request.auth.uid &&
+        incoming().email is string && incoming().email.size() <= 256;
+      allow delete: if false; // Don't allow self-deletion via client UI for now
+    }
+
+    // Folders
+    match /folders/{folderId} {
+      allow get: if isSignedIn() && isOwner(existing().ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isOwner(incoming().ownerId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow update: if isSignedIn() && isOwner(existing().ownerId) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow delete: if isSignedIn() && isOwner(existing().ownerId);
+    }
+
+    // Notes
+    match /notes/{noteId} {
+      allow get: if isSignedIn() && (isOwner(existing().ownerId) || (request.auth.uid in existing().get('sharedWith', [])));
+      allow list: if isSignedIn() && (resource.data.ownerId == request.auth.uid || (request.auth.uid in resource.data.get('sharedWith', [])));
+      allow create: if isSignedIn() && isOwner(incoming().ownerId) &&
+        incoming().title is string && incoming().title.size() <= 200 &&
+        incoming().content is string && incoming().content.size() <= 500000; // ~0.5MB
+      allow update: if isSignedIn() && (isOwner(existing().ownerId) || (request.auth.uid in existing().get('sharedWith', []))) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().title is string && incoming().title.size() <= 200 &&
+        incoming().content is string && incoming().content.size() <= 500000;
+      allow delete: if isSignedIn() && isOwner(existing().ownerId);
+    }
+  }
+}

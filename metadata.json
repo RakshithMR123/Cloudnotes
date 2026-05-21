@@ -1,0 +1,6 @@
+{
+  "name": "CloudNotes",
+  "description": "A premium, AI-powered cloud note-taking application with real-time sync, markdown support, and smart search.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
